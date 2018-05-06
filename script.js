@@ -6,7 +6,7 @@ var bulb_state = true; // Груша, true = разжата
 var ballast_h = 200; // Высота балластного груза
 var bulb_close_degree = 1; // 0 - открыта, 1 - закрыта
 var bulb_press_time;
-var stop_cycle = false;
+var stop_cycle = true;
 
 var lastTime;
 var thisTime;
@@ -275,6 +275,7 @@ function changeValveState(){
 
 function pressBulb(){
 	bulb_state = false;
+	stop_cycle = false;
 	bulb_press_time = performance.now();
 	document.getElementById("bulbButton").disabled = true;
 	document.getElementById("ballastHeight").disabled = true;
@@ -307,7 +308,6 @@ function reset(){
 	valve_state = false;
 	bulb_state = true;
 	ballast_h = 200;
-	stop_cycle = false;
 	timeScale = 1;
 	document.getElementById("bulbButton").disabled = false;
 	document.getElementById("ballastHeight").disabled = false;
@@ -319,7 +319,10 @@ function reset(){
 }
 
 function stopCycle(){
-	stop_cycle = true;
+	if(stop_cycle)
+		reset();
+	else
+		stop_cycle = true;
 }
 
 function cycle(){
