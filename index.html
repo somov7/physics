@@ -1,0 +1,21 @@
+<!DOCTYPE html> 
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Проект по физике</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<input type="button" id="valveButton" onclick="changeValveState()" value="Открыть клапан">
+<input type="button" id="bulbButton" onclick="pressBulb()" value="Сжать грушу">
+<input type="button" id="resetButton" onclick="reset()" value="Перезапуск">
+<input type="range" id="ballastHeight" min="0" max="400" value="200" oninput="setBallastHeight()">
+
+<canvas id="myCanvas" width="900px" height="800px"></canvas>
+
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+#someText{
+	background: black;
+	color: red;
+}
+
+#myCanvas{ 
+	position: absolute;
+	left: 180px;
+	top: 50px;
+    border: 1px solid #000000;
+    z-index: 1;
+}
+
+#valveButton{
+	position: absolute;
+	left: 10px;
+	top: 50px;
+	width: 150px;
+	z-index: 2;
+}
+
+#bulbButton{
+	position: absolute;
+	left: 10px;
+	top: 80px;
+	width: 150px;
+	z-index: 2;
+}
+
+#resetButton{
+	position: absolute;
+	left: 10px;
+	top: 110px;
+	width: 150px;
+	z-index: 2;
+}
+
+#ballastHeight{
+	position: absolute;
+	left: 900px;
+	top: 360px;
+	width: 400px;
+	-webkit-transform: rotate(-90deg); /* Safari and Chrome */
+	-moz-transform: rotate(-90deg);   /* Firefox */
+	-ms-transform: rotate(-90deg);   /* IE 9 */
+	-o-transform: rotate(-90deg);   /* Opera */
+	transform: rotate(-90deg);
+}
