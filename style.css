@@ -46,3 +46,29 @@
 	-o-transform: rotate(-90deg);   /* Opera */
 	transform: rotate(-90deg);
 }
+
+#timeScaleRange{
+	position: absolute;
+	left: 0px;
+	top: 170px;
+	width: 150px;
+}
+
+p{
+	font-family: "Segoe UI";
+}
+
+#timeCaption{
+	position: absolute;
+	left: 10px;
+	top: 130px;
+	width: 150px;
+}
+
+#timeScaleCaption{
+	text-align: center;
+	position: absolute;
+	left: 10px;
+	top: 180px;
+	width: 150px;	
+}

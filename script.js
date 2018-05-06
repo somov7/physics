@@ -5,8 +5,23 @@ var valve_state = false; // Клапан, true = открыт
 var bulb_state = true; // Груша, true = разжата
 var ballast_h = 200; // Высота балластного груза
 var bulb_close_degree = 1; // 0 - открыта, 1 - закрыта
+var bulb_press_time;
+var stop_cycle = false;
 
-var startx = -50, starty = 150;
+var lastTime;
+var thisTime;
+var deltaTime;
+
+var timeScale = 1;
+
+const startx = -50, starty = 150;
+const bulb_press_period = 150;
+
+/* Физика */
+const bulb_volume = 0.5;
+const bottle_volume = 5;
+
+/* Конец физики */
 
 function drawFloor(sx, sy){
 	ctx.beginPath();
@@ -114,18 +129,6 @@ function drawStraw(sx, sy){
 	ctx.bezierCurveTo(sx + 428, sy + 65, sx + 428, sy - 92, sx + 540, sy - 92);
 	ctx.stroke();
 
-/*	ctx.beginPath();
-	ctx.arc(sx + 340, sy - 43, 100, 0.5*Math.PI, 2*Math.PI, true);
-	ctx.lineTo(sx + 440, sy - 200);
-	ctx.stroke();
-	
-	ctx.beginPath();
-	ctx.arc(sx + 340, sy - 43, 108, 0.5*Math.PI, 2*Math.PI, true);
-	ctx.lineTo(sx + 448, sy - 200);
-	ctx.stroke();
-*/
-	
-
 	ctx.beginPath();
 	ctx.arc(sx + 540, sy, 100, 1.5*Math.PI, 2*Math.PI);
 	ctx.lineTo(sx + 640, sy + 450);
@@ -158,7 +161,12 @@ function drawStraw(sx, sy){
 
 function drawBulb(sx, sy){
 	var bulb_gate_r = 150;
-	bulb_close_degree = ballast_h / 400 - 0.01;
+	
+	if(bulb_state)
+		bulb_close_degree = 0;
+	else
+		bulb_close_degree = Math.min((thisTime - bulb_press_time) * timeScale / bulb_press_period, 0.99);
+	
 	var bulb_gate_theta = Math.PI * 0.333 * (1 - bulb_close_degree) + Math.PI * 0.5 * bulb_close_degree; 
 
 	ctx.beginPath();
@@ -170,11 +178,6 @@ function drawBulb(sx, sy){
 	ctx.moveTo(sx + 285, sy + 50);
 	ctx.lineTo(sx + 285 + bulb_gate_r * Math.cos(bulb_gate_theta),sy + 50 - bulb_gate_r * Math.sin(bulb_gate_theta));
 	ctx.stroke();
-
-	/*ctx.beginPath();
-	ctx.arc(sx + 275, sy - 40, 50, 0.65*Math.PI, 0.35*Math.PI);
-	ctx.stroke();
-*/
 
 	if(bulb_close_degree > 0.1){
 
@@ -228,20 +231,6 @@ function drawBulb(sx, sy){
 		ctx.stroke();
 
 	}
-
-
-	/*if(bulb_close_degree < 0.5){
-		ctx.beginPath();
-		ctx.moveTo(sx + 279, sy + 50);
-		ctx.quadraticCurveTo(sx + 278, sy + 18, sx + 298, sy + 4);
-		ctx.stroke();
-
-		ctx.beginPath();
-		ctx.moveTo(sx + 271, sy + 50);
-		ctx.quadraticCurveTo(sx + 272, sy + 18, sx + 252, sy + 4);
-		ctx.stroke();
-	}
-	else{*/
 }
 
 function drawWater(sx, sy, water_h){
@@ -286,15 +275,21 @@ function changeValveState(){
 
 function pressBulb(){
 	bulb_state = false;
+	bulb_press_time = performance.now();
 	document.getElementById("bulbButton").disabled = true;
 	document.getElementById("ballastHeight").disabled = true;
 	document.getElementById("ballastHeight").hidden = true;
-	redraw();
+	cycle();
 }
 
 function setBallastHeight(){
 	ballast_h = parseInt(document.getElementById("ballastHeight").value, 10);
 	redraw();
+}
+
+function changeTimeScale(){
+	timeScale = Math.pow(2, document.getElementById("timeScaleRange").value);
+	document.getElementById("timeScaleCaption").innerHTML = timeScale + "x";
 }
 
 function redraw(){
@@ -312,12 +307,29 @@ function reset(){
 	valve_state = false;
 	bulb_state = true;
 	ballast_h = 200;
+	stop_cycle = false;
 	document.getElementById("bulbButton").disabled = false;
 	document.getElementById("ballastHeight").disabled = false;
 	document.getElementById("ballastHeight").hidden = false;
 	document.getElementById("ballastHeight").value = 200;
+	document.getElementById("timeScaleRange").value = 0;
 	valveButtonCaptionUpdate();
 	redraw();
+}
+
+function stopCycle(){
+	stop_cycle = true;
+}
+
+function cycle(){
+	thisTime = performance.now();
+	deltaTime = (thisTime - lastTime) * timeScale;
+	redraw();
+	lastTime = thisTime;
+	if(!stop_cycle)
+		window.requestAnimationFrame(cycle);
+	else
+		reset();
 }
 
 reset();

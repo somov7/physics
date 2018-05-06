@@ -10,8 +10,11 @@
 
 <input type="button" id="valveButton" onclick="changeValveState()" value="Открыть клапан">
 <input type="button" id="bulbButton" onclick="pressBulb()" value="Сжать грушу">
-<input type="button" id="resetButton" onclick="reset()" value="Перезапуск">
+<input type="button" id="resetButton" onclick="stopCycle()" value="Перезапуск">
 <input type="range" id="ballastHeight" min="0" max="400" value="200" oninput="setBallastHeight()">
+<p id="timeCaption">Время:</p>
+<p id="timeScaleCaption">1x</p>
+<input type="range" id="timeScaleRange" min="-3" max="3" value="0" oninput="changeTimeScale()">
 
 <canvas id="myCanvas" width="900px" height="800px"></canvas>
 
