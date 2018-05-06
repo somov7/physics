@@ -308,6 +308,7 @@ function reset(){
 	bulb_state = true;
 	ballast_h = 200;
 	stop_cycle = false;
+	timeScale = 1;
 	document.getElementById("bulbButton").disabled = false;
 	document.getElementById("ballastHeight").disabled = false;
 	document.getElementById("ballastHeight").hidden = false;
