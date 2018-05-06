@@ -314,7 +314,7 @@ function reset(){
 	document.getElementById("ballastHeight").hidden = false;
 	document.getElementById("ballastHeight").value = 200;
 	document.getElementById("timeScaleRange").value = 0;
-	document.getElementById("timeScaleRange").innerHTML = "1x";
+	document.getElementById("timeScaleCaption").innerHTML = "1x";
 	valveButtonCaptionUpdate();
 	redraw();
 }
