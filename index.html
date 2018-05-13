@@ -11,10 +11,26 @@
 <input type="button" id="valveButton" onclick="changeValveState()" value="Открыть клапан">
 <input type="button" id="bulbButton" onclick="pressBulb()" value="Сжать грушу">
 <input type="button" id="resetButton" onclick="stopCycle()" value="Перезапуск">
-<input type="range" id="ballastHeight" min="0" max="400" value="200" oninput="setBallastHeight()">
+<input type="range" id="ballastHeight" min="0" max="400" value="400" oninput="setBallastHeight()">
 <p id="timeCaption">Время:</p>
 <p id="timeScaleCaption">1x</p>
-<input type="range" id="timeScaleRange" min="-3" max="3" value="0" oninput="changeTimeScale()">
+<input type="range" id="timeScaleRange" min="-4" max="4" value="0" oninput="changeTimeScale()">
+
+<div id="stateOutput">
+
+	<p id="printVolumeCap">Объём:</p>
+	<p id="printPressureCap">Давление:</p>
+	<p id="printTemperatureCap">Температура:</p>
+	<p id="printTimeCap">Время:</p>
+	<p id="printWaterCap">Высота столбика воды:</p>
+
+	<p id="printVolume">5.5 Л</p>
+	<p id="printPressure">103500 Па</p>
+	<p id="printTemperature">303 К</p>
+	<p id="printTime">0 сек</p>
+	<p id="printWater">0 мм</p>
+
+</div>
 
 <canvas id="myCanvas" width="900px" height="800px"></canvas>
 

@@ -1,25 +1,76 @@
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
+let c = document.getElementById("myCanvas");
+let ctx = c.getContext("2d");
 
-var valve_state = false; // Клапан, true = открыт
-var bulb_state = true; // Груша, true = разжата
-var ballast_h = 200; // Высота балластного груза
-var bulb_close_degree = 1; // 0 - открыта, 1 - закрыта
-var bulb_press_time;
-var stop_cycle = true;
+let valve_state = false; // Клапан, true = открыт
+let bulb_state = true; // Груша, true = разжата
+let ballast_h = 200; // Высота балластного груза
+let bulb_close_degree = 1; // 0 - открыта, 1 - закрыта
+let bulb_press_time;
+let stop_cycle = true;
+let water_h;
+let ballast_water_h;
+let water_volume = 3350;
 
-var lastTime;
-var thisTime;
-var deltaTime;
+let lastTime;
+let thisTime;
+let deltaTime;
+let pastTime;
 
-var timeScale = 1;
+let timeScale = 1;
 
 const startx = -50, starty = 150;
 const bulb_press_period = 150;
 
 /* Физика */
-const bulb_volume = 0.5;
-const bottle_volume = 5;
+const bulb_volume = 0.5; 
+const bottle_volume = 5; // Литры
+const poisson = 1.4;
+const g = 9.81;
+const water_rho = 1000;
+let atmosphere_pressure = 103500 // Па
+let atmosphere_temperature = 303 // Кельвины
+let volume, temperature, pressure;
+
+function startPhysics(){
+	volume = bulb_volume + bottle_volume;
+	temperature = atmosphere_temperature;
+	pressure = atmosphere_pressure;	
+	pastTime = 0;
+}
+
+function calcPhysics(){
+	if(bulb_close_degree < 0.999){
+		bulb_close_degree += deltaTime / bulb_press_period;
+		if(bulb_close_degree >= 1)
+			bulb_close_degree = 0.999;
+		let new_volume = bottle_volume + bulb_volume * (1 - bulb_close_degree);
+		temperature *= Math.pow(volume / new_volume, poisson - 1);
+		pressure *= Math.pow(volume / new_volume, poisson);
+		volume = new_volume;
+	}
+	else{
+		if(valve_state){
+			temperature = atmosphere_temperature + (temperature - atmosphere_temperature) * Math.pow(Math.E, -0.00153 * deltaTime);
+			pressure = atmosphere_pressure + (pressure - atmosphere_pressure) * Math.pow(Math.E, -0.002 * deltaTime);
+		}
+		else{
+			let new_temperature = atmosphere_temperature + (temperature - atmosphere_temperature) * Math.pow(Math.E, -0.000145 * deltaTime);
+			pressure *= new_temperature / temperature;
+			temperature = new_temperature;
+		}
+	}
+	ballast_water_h = (water_volume - 2 * ballast_h + (pressure - atmosphere_pressure) / (water_rho * g) * 200) / 51;
+	water_h = water_volume - ballast_h - ballast_water_h * 50;
+}
+
+function updateCaptures(){
+	document.getElementById("printVolume").innerHTML = Math.round(volume * 100) / 100 + " Л";
+	document.getElementById("printPressure").innerHTML = Math.round(pressure) + " Па";
+	document.getElementById("printTemperature").innerHTML = Math.round(temperature * 10) / 10 + " К";
+	document.getElementById("printTime").innerHTML = Math.round(pastTime / 10) / 100 + " сек";
+	document.getElementById("printWater").innerHTML = Math.round((water_h / 3) * 10) / 10 + " мм";
+	valveButtonCaptionUpdate();
+}
 
 /* Конец физики */
 
@@ -29,7 +80,7 @@ function drawFloor(sx, sy){
 	ctx.lineTo(sx + 960, sy + 600);	
 	ctx.stroke();
 
-	for (var i = 0; i < 22; ++i) {
+	for (let i = 0; i < 22; ++i) {
       ctx.beginPath();
       ctx.moveTo(sx + 60 + i * 40, sy + 640);
       ctx.lineTo(sx + 100 + i * 40, sy + 600);
@@ -101,7 +152,7 @@ function drawRuler(sx, sy){
 	ctx.rect(sx + 660, sy - 100, 80, 700);
 	ctx.stroke();
 
-	for(var i = 0; i < 151; i++){
+	for(let i = 0; i < 151; i++){
 		ctx.beginPath();
 		ctx.moveTo(sx + 660, sy + 450 - 3 * i);
 		if(i % 10 == 0){
@@ -160,14 +211,9 @@ function drawStraw(sx, sy){
 }
 
 function drawBulb(sx, sy){
-	var bulb_gate_r = 150;
+	let bulb_gate_r = 150;
 	
-	if(bulb_state)
-		bulb_close_degree = 0;
-	else
-		bulb_close_degree = Math.min((thisTime - bulb_press_time) * timeScale / bulb_press_period, 0.99);
-	
-	var bulb_gate_theta = Math.PI * 0.333 * (1 - bulb_close_degree) + Math.PI * 0.5 * bulb_close_degree; 
+	let bulb_gate_theta = Math.PI * 0.333 * (1 - bulb_close_degree) + Math.PI * 0.5 * bulb_close_degree; 
 
 	ctx.beginPath();
 	ctx.moveTo(sx + 265, sy + 50);
@@ -233,25 +279,29 @@ function drawBulb(sx, sy){
 	}
 }
 
-function drawWater(sx, sy, water_h){
-	if(water_h > 400)
-		water_h = 400;
-	if(water_h < 0)
+function drawWater(sx, sy){
+	let arc_water_alpha = 0;
+	if(water_h > 450)
+		water_h = 450;
+	if(water_h < 0){
+		arc_water_alpha = -water_h / 96;
 		water_h = 0;
-	var bulb_water_h = 50 + (400 - ballast_h) * 0.025 + (400 - ballast_h) * 0.025;
-
+	}
+	
 	ctx.lineWidth = 6;
 	ctx.strokeStyle="#0099FF";
 
 	ctx.beginPath();
-	ctx.moveTo(sx + 636, sy + 450 - water_h - bulb_water_h);
+	ctx.moveTo(sx + 636, sy + 450 - water_h);
 	ctx.lineTo(sx + 636, sy + 450);
-	ctx.arc(sx + 636 + 96,sy + 450, 96, Math.PI, 2*Math.PI, true);
+	ctx.stroke();
+	ctx.beginPath();
+	ctx.arc(sx + 636 + 96,sy + 450, 96, Math.PI - arc_water_alpha, 2*Math.PI, true);
 	ctx.lineTo(sx + 828, sy + 450 - ballast_h - 1);
 	ctx.stroke();
 
 	ctx.fillStyle="#0099FF";
-	ctx.fillRect(sx + 775, sy + 450 - ballast_h - bulb_water_h, 106, bulb_water_h - 1);
+	ctx.fillRect(sx + 775, sy + 450 - ballast_h - ballast_water_h, 106, ballast_water_h - 1);
 
 	ctx.fillStyle="#000000";
 
@@ -276,15 +326,20 @@ function changeValveState(){
 function pressBulb(){
 	bulb_state = false;
 	stop_cycle = false;
-	bulb_press_time = performance.now();
+	bulb_press_time = lastTime = performance.now();
+	startPhysics();
 	document.getElementById("bulbButton").disabled = true;
 	document.getElementById("ballastHeight").disabled = true;
 	document.getElementById("ballastHeight").hidden = true;
+	document.getElementById("stateOutput").hidden = false;
 	cycle();
 }
 
 function setBallastHeight(){
 	ballast_h = parseInt(document.getElementById("ballastHeight").value, 10);
+	ballast_water_h = (water_volume - 2 * ballast_h) / 51;
+	water_h = ballast_h + ballast_water_h;
+	updateCaptures();
 	redraw();
 }
 
@@ -304,18 +359,39 @@ function redraw(){
 	drawWater(startx, starty, ballast_h);
 }
 
+function set(){
+	valve_state = false;
+	bulb_state = true;
+	ballast_h = 400;
+	ballast_water_h = 50;
+	water_h = 450;
+	timeScale = 1;
+	bulb_close_degree = 0;
+	volume = bottle_volume + bulb_volume;
+	pressure = atmosphere_pressure;
+	temperature = atmosphere_temperature;
+	pastTime = 0;
+	document.getElementById("timeScaleRange").value = 0;
+	document.getElementById("stateOutput").hidden = true;
+	updateCaptures();
+	redraw();
+}
+
 function reset(){
 	valve_state = false;
 	bulb_state = true;
-	ballast_h = 200;
+	setBallastHeight();
 	timeScale = 1;
+	bulb_close_degree = 0;
+	volume = bottle_volume + bulb_volume;
+	pressure = atmosphere_pressure;
+	temperature = atmosphere_temperature;
+	pastTime = 0;
 	document.getElementById("bulbButton").disabled = false;
 	document.getElementById("ballastHeight").disabled = false;
 	document.getElementById("ballastHeight").hidden = false;
-	document.getElementById("ballastHeight").value = 200;
-	document.getElementById("timeScaleRange").value = 0;
-	document.getElementById("timeScaleCaption").innerHTML = "1x";
-	valveButtonCaptionUpdate();
+	document.getElementById("stateOutput").hidden = true;
+	updateCaptures();
 	redraw();
 }
 
@@ -329,6 +405,9 @@ function stopCycle(){
 function cycle(){
 	thisTime = performance.now();
 	deltaTime = (thisTime - lastTime) * timeScale;
+	pastTime += deltaTime;
+	calcPhysics();
+	updateCaptures();
 	redraw();
 	lastTime = thisTime;
 	if(!stop_cycle)
@@ -337,4 +416,4 @@ function cycle(){
 		reset();
 }
 
-reset();
+set();
