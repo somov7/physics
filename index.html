@@ -8,13 +8,30 @@
 
 <body>
 
-<input type="button" id="valveButton" onclick="changeValveState()" value="Открыть клапан">
-<input type="button" id="bulbButton" onclick="pressBulb()" value="Сжать грушу">
-<input type="button" id="resetButton" onclick="stopCycle()" value="Перезапуск">
-<input type="range" id="ballastHeight" min="0" max="400" value="400" oninput="setBallastHeight()">
-<p id="timeCaption">Время:</p>
-<p id="timeScaleCaption">1x</p>
-<input type="range" id="timeScaleRange" min="-4" max="4" value="0" oninput="changeTimeScale()">
+<div id="leftBar">
+	
+	<input type="button" id="valveButton" onclick="changeValveState()" value="Открыть клапан">
+	<input type="button" id="bulbButton" onclick="pressBulb()" value="Сжать грушу">
+	<input type="button" id="resetButton" onclick="stopCycle()" value="Перезапуск">
+	
+	<div id="timeScale">
+		<p id="timeCaption">Время</p>
+		<input type="range" id="timeScaleRange" min="-4" max="4" value="0" oninput="changeTimeScale()">
+		<p id="timeScaleCaption">1x</p>
+	</div>
+
+	<input type="button" id="pauseButton" onclick="togglePause()" value="Пауза" disabled>
+	
+	<p id="atmCaptionP">Атмосферное давление</p>
+	<p id="atmCaptionT">Температура воздуха</p>
+
+	<input type="number" id="atmPressure" min="50000" max="200000" value="101300">
+	<input type="number" id="atmTemperature" min="250" max="325" value="303">
+	
+	<p id="atmCaptionPM">Па</p>
+	<p id="atmCaptionTM">К</p>
+	
+</div>
 
 <div id="stateOutput">
 
@@ -30,6 +47,10 @@
 	<p id="printTime">0 сек</p>
 	<p id="printWater">0 мм</p>
 
+</div>
+
+<div id="ballast">
+	<input class="xwidth" type="range" id="ballastHeight" min="0" max="400" value="400" oninput="setBallastHeight()">
 </div>
 
 <canvas id="myCanvas" width="900px" height="800px"></canvas>

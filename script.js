@@ -17,9 +17,11 @@ let deltaTime;
 let pastTime;
 
 let timeScale = 1;
+let isPause = 0;
 
 const startx = -50, starty = 150;
 const bulb_press_period = 150;
+const bulb_press_period_ph = 450;
 
 /* Физика */
 const bulb_volume = 0.5; 
@@ -27,23 +29,29 @@ const bottle_volume = 5; // Литры
 const poisson = 1.4;
 const g = 9.81;
 const water_rho = 1000;
-let atmosphere_pressure = 103500 // Па
-let atmosphere_temperature = 303 // Кельвины
+let atmosphere_pressure = 101300 // Па
+let atmosphere_temperature = 303.1 // Кельвины
 let volume, temperature, pressure;
 
 function startPhysics(){
 	volume = bulb_volume + bottle_volume;
-	temperature = atmosphere_temperature;
-	pressure = atmosphere_pressure;	
+	temperature = atmosphere_temperature = Number(document.getElementById("atmTemperature").value);
+	pressure = atmosphere_pressure = Number(document.getElementById("atmPressure").value);	
+	bulb_close_degree_ph = 0;
 	pastTime = 0;
 }
 
 function calcPhysics(){
 	if(bulb_close_degree < 0.999){
 		bulb_close_degree += deltaTime / bulb_press_period;
-		if(bulb_close_degree >= 1)
+		if(bulb_close_degree >= 0.999)
 			bulb_close_degree = 0.999;
-		let new_volume = bottle_volume + bulb_volume * (1 - bulb_close_degree);
+	}
+	if(bulb_close_degree_ph < 1){
+		bulb_close_degree_ph += deltaTime / bulb_press_period_ph;
+		if(bulb_close_degree_ph > 1)
+			bulb_close_degree_ph = 1;
+		let new_volume = bottle_volume + bulb_volume * (1 - bulb_close_degree_ph);
 		temperature *= Math.pow(volume / new_volume, poisson - 1);
 		pressure *= Math.pow(volume / new_volume, poisson);
 		volume = new_volume;
@@ -59,7 +67,7 @@ function calcPhysics(){
 			temperature = new_temperature;
 		}
 	}
-	ballast_water_h = (water_volume - 2 * ballast_h + (pressure - atmosphere_pressure) / (water_rho * g) * 200) / 51;
+	ballast_water_h = (water_volume - 2 * ballast_h + (pressure - atmosphere_pressure) / (water_rho * g) * 100) / 51;
 	water_h = water_volume - ballast_h - ballast_water_h * 50;
 }
 
@@ -68,7 +76,7 @@ function updateCaptures(){
 	document.getElementById("printPressure").innerHTML = Math.round(pressure) + " Па";
 	document.getElementById("printTemperature").innerHTML = Math.round(temperature * 10) / 10 + " К";
 	document.getElementById("printTime").innerHTML = Math.round(pastTime / 10) / 100 + " сек";
-	document.getElementById("printWater").innerHTML = Math.round((water_h / 3) * 10) / 10 + " мм";
+	document.getElementById("printWater").innerHTML = Math.round(((water_h) / 3) * 10) / 10 + " мм";
 	valveButtonCaptionUpdate();
 }
 
@@ -332,6 +340,9 @@ function pressBulb(){
 	document.getElementById("ballastHeight").disabled = true;
 	document.getElementById("ballastHeight").hidden = true;
 	document.getElementById("stateOutput").hidden = false;
+	document.getElementById("pauseButton").disabled = false;
+	document.getElementById("atmPressure").disabled = true;
+	document.getElementById("atmTemperature").disabled = true;
 	cycle();
 }
 
@@ -346,6 +357,14 @@ function setBallastHeight(){
 function changeTimeScale(){
 	timeScale = Math.pow(2, document.getElementById("timeScaleRange").value);
 	document.getElementById("timeScaleCaption").innerHTML = timeScale + "x";
+}
+
+function togglePause(){
+	isPause = !isPause;
+	if(isPause)
+		document.getElementById("pauseButton").value = "Продолжить";
+	else
+		document.getElementById("pauseButton").value = "Пауза";
 }
 
 function redraw(){
@@ -368,11 +387,13 @@ function set(){
 	timeScale = 1;
 	bulb_close_degree = 0;
 	volume = bottle_volume + bulb_volume;
-	pressure = atmosphere_pressure;
-	temperature = atmosphere_temperature;
 	pastTime = 0;
 	document.getElementById("timeScaleRange").value = 0;
 	document.getElementById("stateOutput").hidden = true;
+	document.getElementById("atmPressure").value = 101300;
+	document.getElementById("atmTemperature").value = 303;
+	pressure = atmosphere_pressure = Number(document.getElementById("atmPressure").value);
+	temperature = atmosphere_temperature = Number(document.getElementById("atmTemperature").value);
 	updateCaptures();
 	redraw();
 }
@@ -387,10 +408,15 @@ function reset(){
 	pressure = atmosphere_pressure;
 	temperature = atmosphere_temperature;
 	pastTime = 0;
+	isPause = 0;
 	document.getElementById("bulbButton").disabled = false;
 	document.getElementById("ballastHeight").disabled = false;
 	document.getElementById("ballastHeight").hidden = false;
 	document.getElementById("stateOutput").hidden = true;
+	document.getElementById("pauseButton").disabled = true;
+	document.getElementById("pauseButton").value = "Пауза";
+	document.getElementById("atmPressure").disabled = false;
+	document.getElementById("atmTemperature").disabled = false;
 	updateCaptures();
 	redraw();
 }
@@ -404,7 +430,7 @@ function stopCycle(){
 
 function cycle(){
 	thisTime = performance.now();
-	deltaTime = (thisTime - lastTime) * timeScale;
+	deltaTime = (thisTime - lastTime) * timeScale * (1 - isPause);
 	pastTime += deltaTime;
 	calcPhysics();
 	updateCaptures();
