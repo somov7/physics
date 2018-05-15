@@ -74,7 +74,7 @@ function calcPhysics(){
 function updateCaptures(){
 	document.getElementById("printVolume").innerHTML = Math.round(volume * 100) / 100 + " Л";
 	document.getElementById("printPressure").innerHTML = Math.round(pressure) + " Па";
-	document.getElementById("printTemperature").innerHTML = Math.round(temperature * 10) / 10 + " К";
+	document.getElementById("printTemperature").innerHTML = Math.round(temperature * 10) / 10 + " К (" + Math.round((temperature - 273.15) * 10) / 10 + " °C)";
 	document.getElementById("printTime").innerHTML = Math.round(pastTime / 10) / 100 + " сек";
 	document.getElementById("printWater").innerHTML = Math.round(((water_h) / 3) * 10) / 10 + " мм";
 	valveButtonCaptionUpdate();
@@ -82,155 +82,155 @@ function updateCaptures(){
 
 /* Конец физики */
 
-function drawFloor(sx, sy){
+function drawFloor(){
 	ctx.beginPath();
-	ctx.moveTo(sx + 50, sy + 600);
-	ctx.lineTo(sx + 960, sy + 600);	
+	ctx.moveTo(50, 600);
+	ctx.lineTo(960, 600);	
 	ctx.stroke();
 
 	for (let i = 0; i < 22; ++i) {
       ctx.beginPath();
-      ctx.moveTo(sx + 60 + i * 40, sy + 640);
-      ctx.lineTo(sx + 100 + i * 40, sy + 600);
+      ctx.moveTo(60 + i * 40, 640);
+      ctx.lineTo(100 + i * 40, 600);
       ctx.stroke();
     }
 }
 
-function drawValve(sx, sy){
+function drawValve(){
 	if (valve_state){
 		ctx.beginPath();
-		ctx.moveTo(sx + 252.1, sy + 61);
-		ctx.lineTo(sx + 259, sy + 57);
+		ctx.moveTo(252.1, 61);
+		ctx.lineTo(259, 57);
 		ctx.stroke();
 	}
 	else{
 		ctx.beginPath();
-		ctx.moveTo(sx + 259,sy + 65);
-		ctx.lineTo(sx + 259,sy + 57);
+		ctx.moveTo(259,65);
+		ctx.lineTo(259,57);
 		ctx.stroke();
 	}
 
 }
 
-function drawBottle(sx, sy){
+function drawBottle(){
 	/*Bottom part*/
 	ctx.beginPath();
-	ctx.moveTo(sx + 150,sy + 120);
-	ctx.lineTo(sx + 150,sy + 580);
-	ctx.arcTo(sx + 150, sy + 600, sx + 170, sy + 600, 20);
-	ctx.lineTo(sx + 380,sy + 600);
-	ctx.arcTo(sx + 400,sy + 600,sx + 400,sy + 580,20);
-	ctx.lineTo(sx + 400,sy + 120);
+	ctx.moveTo(150,120);
+	ctx.lineTo(150,580);
+	ctx.arcTo(150, 600, 170, 600, 20);
+	ctx.lineTo(380,600);
+	ctx.arcTo(400,600,400,580,20);
+	ctx.lineTo(400,120);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(sx + 170,sy + 120,20,Math.PI, 1.333*Math.PI);
-	ctx.lineTo(sx + 255,sy + 80);
+	ctx.arc(170,120,20,Math.PI, 1.333*Math.PI);
+	ctx.lineTo(255,80);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.moveTo(sx + 295,sy + 80);
-	ctx.arc(sx + 380,sy + 120,20,1.667*Math.PI, 2*Math.PI);
+	ctx.moveTo(295,80);
+	ctx.arc(380,120,20,1.667*Math.PI, 2*Math.PI);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(sx + 249,sy + 71,10, 0.333*Math.PI, 0, true);
+	ctx.arc(249,71,10, 0.333*Math.PI, 0, true);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(sx + 301,sy + 71,10, 0.667*Math.PI, Math.PI);
+	ctx.arc(301,71,10, 0.667*Math.PI, Math.PI);
 	ctx.stroke();
 
 	/*Top part*/
 	ctx.beginPath();
-	ctx.moveTo(sx + 284 - 25,sy + 71);
-	ctx.lineTo(sx + 284 - 25,sy + 65);
-	ctx.moveTo(sx + 284 - 25,sy + 57);
-	ctx.lineTo(sx + 284 - 25,sy + 50);
-	ctx.lineTo(sx + 297 - 25,sy + 50);
-	ctx.moveTo(sx + 303 - 25,sy + 50);
-	ctx.lineTo(sx + 316 - 25,sy + 50);
-	ctx.lineTo(sx + 316 - 25,sy + 57);
-	ctx.moveTo(sx + 316 - 25,sy + 65);
-	ctx.lineTo(sx + 316 - 25,sy + 71);
+	ctx.moveTo(284 - 25,71);
+	ctx.lineTo(284 - 25,65);
+	ctx.moveTo(284 - 25,57);
+	ctx.lineTo(284 - 25,50);
+	ctx.lineTo(297 - 25,50);
+	ctx.moveTo(303 - 25,50);
+	ctx.lineTo(316 - 25,50);
+	ctx.lineTo(316 - 25,57);
+	ctx.moveTo(316 - 25,65);
+	ctx.lineTo(316 - 25,71);
 	ctx.stroke();
 }
 
-function drawRuler(sx, sy){
-	ctx.rect(sx + 660, sy - 100, 80, 700);
+function drawRuler(){
+	ctx.rect(660, -100, 80, 700);
 	ctx.stroke();
 
 	for(let i = 0; i < 151; i++){
 		ctx.beginPath();
-		ctx.moveTo(sx + 660, sy + 450 - 3 * i);
+		ctx.moveTo(660, 450 - 3 * i);
 		if(i % 10 == 0){
-			ctx.lineTo(sx + 710, sy + 450 - 3 * i);
-			ctx.fillText("" + i / 10, sx + 715, sy + 453 - 3 * i);
+			ctx.lineTo(710, 450 - 3 * i);
+			ctx.fillText("" + i / 10, 715, 453 - 3 * i);
 		}
 		else if(i % 5 == 0)
-			ctx.lineTo(sx + 695, sy + 450 - 3 * i);
+			ctx.lineTo(695, 450 - 3 * i);
 		else
-			ctx.lineTo(sx + 680, sy + 450 - 3 * i);
+			ctx.lineTo(680, 450 - 3 * i);
 		ctx.stroke();
 	}
 }
 
-function drawStraw(sx, sy){
+function drawStraw(){
 	ctx.beginPath();
-	ctx.moveTo(sx + 290,sy + 57);
-	ctx.lineTo(sx + 340,sy + 57);
-	ctx.bezierCurveTo(sx + 420, sy + 57, sx + 420, sy - 100, sx + 540, sy - 100);
+	ctx.moveTo(290,57);
+	ctx.lineTo(340,57);
+	ctx.bezierCurveTo(420, 57, 420, -100, 540, -100);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.moveTo(sx + 290,sy + 65);
-	ctx.lineTo(sx + 340,sy + 65);
-	ctx.bezierCurveTo(sx + 428, sy + 65, sx + 428, sy - 92, sx + 540, sy - 92);
+	ctx.moveTo(290,65);
+	ctx.lineTo(340,65);
+	ctx.bezierCurveTo(428, 65, 428, -92, 540, -92);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(sx + 540, sy, 100, 1.5*Math.PI, 2*Math.PI);
-	ctx.lineTo(sx + 640, sy + 450);
+	ctx.arc(540, 0, 100, 1.5*Math.PI, 2*Math.PI);
+	ctx.lineTo(640, 450);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(sx + 540, sy, 92, 1.5*Math.PI, 2*Math.PI);
-	ctx.lineTo(sx + 632, sy + 450);
+	ctx.arc(540, 0, 92, 1.5*Math.PI, 2*Math.PI);
+	ctx.lineTo(632, 450);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(sx + 732, sy + 450, 100, Math.PI, 2*Math.PI, true);
-	ctx.lineTo(sx + 832, sy + 450 - ballast_h);
+	ctx.arc(732, 450, 100, Math.PI, 2*Math.PI, true);
+	ctx.lineTo(832, 450 - ballast_h);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(sx + 732, sy + 450, 92, Math.PI, 2*Math.PI, true);
-	ctx.lineTo(sx + 824, sy + 450 - ballast_h);
+	ctx.arc(732, 450, 92, Math.PI, 2*Math.PI, true);
+	ctx.lineTo(824, 450 - ballast_h);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.moveTo(sx + 832, sy + 450 - ballast_h);
-	ctx.lineTo(sx + 832 + 50, sy + 450 - ballast_h);
-	ctx.lineTo(sx + 832 + 50, sy + 300 - ballast_h);
-	ctx.lineTo(sx + 824 - 50, sy + 300 - ballast_h);
-	ctx.lineTo(sx + 824 - 50, sy + 450 - ballast_h);
-	ctx.lineTo(sx + 824, sy + 450 - ballast_h);
+	ctx.moveTo(832, 450 - ballast_h);
+	ctx.lineTo(832 + 50, 450 - ballast_h);
+	ctx.lineTo(832 + 50, 300 - ballast_h);
+	ctx.lineTo(824 - 50, 300 - ballast_h);
+	ctx.lineTo(824 - 50, 450 - ballast_h);
+	ctx.lineTo(824, 450 - ballast_h);
 	ctx.stroke();
 }
 
-function drawBulb(sx, sy){
+function drawBulb(){
 	let bulb_gate_r = 150;
 	
 	let bulb_gate_theta = Math.PI * 0.333 * (1 - bulb_close_degree) + Math.PI * 0.5 * bulb_close_degree; 
 
 	ctx.beginPath();
-	ctx.moveTo(sx + 265, sy + 50);
-	ctx.lineTo(sx + 265 - bulb_gate_r * Math.cos(bulb_gate_theta),sy + 50 - bulb_gate_r * Math.sin(bulb_gate_theta));
+	ctx.moveTo(265, 50);
+	ctx.lineTo(265 - bulb_gate_r * Math.cos(bulb_gate_theta),50 - bulb_gate_r * Math.sin(bulb_gate_theta));
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.moveTo(sx + 285, sy + 50);
-	ctx.lineTo(sx + 285 + bulb_gate_r * Math.cos(bulb_gate_theta),sy + 50 - bulb_gate_r * Math.sin(bulb_gate_theta));
+	ctx.moveTo(285, 50);
+	ctx.lineTo(285 + bulb_gate_r * Math.cos(bulb_gate_theta),50 - bulb_gate_r * Math.sin(bulb_gate_theta));
 	ctx.stroke();
 
 	if(bulb_close_degree > 0.1){
@@ -244,50 +244,50 @@ function drawBulb(sx, sy){
 		let phi = 2 * alpha + beta;
 
 		ctx.beginPath();
-		ctx.arc(sx + 275, sy - 40, 50, 1.5*Math.PI - phi, 1.5*Math.PI + phi);
+		ctx.arc(275, -40, 50, 1.5*Math.PI - phi, 1.5*Math.PI + phi);
 		ctx.stroke();	
 
 		ctx.beginPath();
-		ctx.moveTo(sx + 279, sy + 50);
-		ctx.quadraticCurveTo(sx + 278, sy + 18, sx + Math.min(298, 285 + 46 / t), sy + 4);
+		ctx.moveTo(279, 50);
+		ctx.quadraticCurveTo(278, 18, Math.min(298, 285 + 46 / t), 4);
 		ctx.stroke();
 
 		ctx.beginPath();
-		ctx.moveTo(sx + 271, sy + 50);
-		ctx.quadraticCurveTo(sx + 272, sy + 18, sx + Math.max(252, 265 - 46 / t), sy + 4);
+		ctx.moveTo(271, 50);
+		ctx.quadraticCurveTo(272, 18, Math.max(252, 265 - 46 / t), 4);
 		ctx.stroke();
 
 		if(bulb_close_degree < 0.45){
 			ctx.beginPath();
-			ctx.arc(sx + 275, sy - 40, 50, 0.5*Math.PI + beta, 0.65*Math.PI, true);
+			ctx.arc(275, -40, 50, 0.5*Math.PI + beta, 0.65*Math.PI, true);
 			ctx.stroke();
 
 			ctx.beginPath();
-			ctx.arc(sx + 275, sy - 40, 50, 0.5*Math.PI - beta, 0.35*Math.PI);
+			ctx.arc(275, -40, 50, 0.5*Math.PI - beta, 0.35*Math.PI);
 			ctx.stroke();
 		}
 	}
 	else{
 
 		ctx.beginPath();
-		ctx.arc(sx + 275, sy - 40, 50, 0.35*Math.PI, 0.65*Math.PI, true);
+		ctx.arc(275, -40, 50, 0.35*Math.PI, 0.65*Math.PI, true);
 		ctx.stroke();	
 
 
 		ctx.beginPath();
-		ctx.moveTo(sx + 279, sy + 50);
-		ctx.quadraticCurveTo(sx + 278, sy + 18, sx + 298, sy + 4);
+		ctx.moveTo(279, 50);
+		ctx.quadraticCurveTo(278, 18, 298, 4);
 		ctx.stroke();
 
 		ctx.beginPath();
-		ctx.moveTo(sx + 271, sy + 50);
-		ctx.quadraticCurveTo(sx + 272, sy + 18, sx + 252, sy + 4);
+		ctx.moveTo(271, 50);
+		ctx.quadraticCurveTo(272, 18, 252, 4);
 		ctx.stroke();
 
 	}
 }
 
-function drawWater(sx, sy){
+function drawWater(){
 	let arc_water_alpha = 0;
 	if(water_h > 450)
 		water_h = 450;
@@ -300,16 +300,16 @@ function drawWater(sx, sy){
 	ctx.strokeStyle="#0099FF";
 
 	ctx.beginPath();
-	ctx.moveTo(sx + 636, sy + 450 - water_h);
-	ctx.lineTo(sx + 636, sy + 450);
+	ctx.moveTo(636, 450 - water_h);
+	ctx.lineTo(636, 450);
 	ctx.stroke();
 	ctx.beginPath();
-	ctx.arc(sx + 636 + 96,sy + 450, 96, Math.PI - arc_water_alpha, 2*Math.PI, true);
-	ctx.lineTo(sx + 828, sy + 450 - ballast_h - 1);
+	ctx.arc(636 + 96,450, 96, Math.PI - arc_water_alpha, 2*Math.PI, true);
+	ctx.lineTo(828, 450 - ballast_h - 1);
 	ctx.stroke();
 
 	ctx.fillStyle="#0099FF";
-	ctx.fillRect(sx + 775, sy + 450 - ballast_h - ballast_water_h, 106, ballast_water_h - 1);
+	ctx.fillRect(775, 450 - ballast_h - ballast_water_h, 106, ballast_water_h - 1);
 
 	ctx.fillStyle="#000000";
 
@@ -343,11 +343,16 @@ function pressBulb(){
 	document.getElementById("pauseButton").disabled = false;
 	document.getElementById("atmPressure").disabled = true;
 	document.getElementById("atmTemperature").disabled = true;
+	document.getElementById("atmTemperatureC").disabled = true;
 	cycle();
 }
 
-function setBallastHeight(){
-	ballast_h = parseInt(document.getElementById("ballastHeight").value, 10);
+function setBallastHeight(){	
+	ballast_h = Number(document.getElementById("ballastHeight").value);
+	if(ballast_h < 0)
+		ballast_h = 0;
+	if(ballast_h > 400)
+		ballast_h = 400;
 	ballast_water_h = (water_volume - 2 * ballast_h) / 51;
 	water_h = ballast_h + ballast_water_h;
 	updateCaptures();
@@ -367,15 +372,26 @@ function togglePause(){
 		document.getElementById("pauseButton").value = "Пауза";
 }
 
+function connectTemperatures(p){
+	if(p)
+		document.getElementById("atmTemperatureC").value = Math.round((Number(document.getElementById("atmTemperature").value) - 273.15) * 100) / 100;
+	else
+		document.getElementById("atmTemperature").value = Math.round((Number(document.getElementById("atmTemperatureC").value) + 273.15) * 100) / 100;
+
+}
+
 function redraw(){
 	ctx.clearRect(0, 0, 1200, 800);
-	drawFloor(startx, starty);
-	drawBottle(startx, starty);
-	drawValve(startx, starty);
-	drawStraw(startx, starty);
-	drawRuler(startx, starty);
-	drawBulb(startx, starty);
-	drawWater(startx, starty, ballast_h);
+	ctx.save();
+	ctx.translate(startx, starty);
+	drawFloor();
+	drawBottle();
+	drawValve();
+	drawStraw();
+	drawRuler();
+	drawBulb();
+	drawWater();
+	ctx.restore();
 }
 
 function set(){
@@ -391,7 +407,8 @@ function set(){
 	document.getElementById("timeScaleRange").value = 0;
 	document.getElementById("stateOutput").hidden = true;
 	document.getElementById("atmPressure").value = 101300;
-	document.getElementById("atmTemperature").value = 303;
+	document.getElementById("atmTemperature").value = 293.15;
+	document.getElementById("atmTemperatureC").value = 20;
 	pressure = atmosphere_pressure = Number(document.getElementById("atmPressure").value);
 	temperature = atmosphere_temperature = Number(document.getElementById("atmTemperature").value);
 	updateCaptures();
@@ -417,6 +434,7 @@ function reset(){
 	document.getElementById("pauseButton").value = "Пауза";
 	document.getElementById("atmPressure").disabled = false;
 	document.getElementById("atmTemperature").disabled = false;
+	document.getElementById("atmTemperatureC").disabled = false;
 	updateCaptures();
 	redraw();
 }

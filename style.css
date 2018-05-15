@@ -281,18 +281,73 @@ input[type=range]:focus::-ms-fill-upper {
   background: #EEEEEE;
 }
 
+#ballast{
+	opacity: 0;
+	cursor: grab;
+	position: absolute;
+	left: 680px;
+	top: 385px;
+	z-index: 2;
+}
+
 #ballastHeight{
 	/*opacity: 0*/;
-	position: absolute;
-	left: 1000px;
-	top: 355px;
-	width: 387.75px;
+	width: 750px;
+	cursor: grab;
 	-webkit-transform: rotate(-90deg); /* Safari and Chrome */
 	-moz-transform: rotate(-90deg);   /* Firefox */
 	-ms-transform: rotate(-90deg);   /* IE 9 */
 	-o-transform: rotate(-90deg);   /* Opera */
 	transform: rotate(-90deg);
 	z-index: 2;
+}
+
+#ballastHeight::-webkit-slider-thumb {
+	height: 200px;
+	cursor: grab;
+}
+
+#ballastHeight::-moz-range-thumb {
+	height: 200px;
+	cursor: grab;
+}
+
+#ballastHeight::-webkit-slider-runnable-track {
+	height: 190px;
+	cursor: grab;
+}
+
+#ballastHeight::-moz-range-track {
+	height: 190px;
+	cursor: grab;
+}
+
+#ballastHeight::-webkit-slider-thumb:mousedown {
+	cursor: grabbing;
+}
+
+#ballastHeight::-moz-range-thumb:mousedown {
+	cursor: grabbing;
+}
+
+#ballastHeight::-webkit-slider-runnable-track:mousedown {
+	cursor: grabbing;
+}
+
+#ballastHeight::-moz-range-track:mousedown {
+	cursor: grabbing;
+}
+
+#ballastHeight:mousedown{
+	cursor: grabbing;
+}
+
+#ballast input[type=button]{
+	width: 190px;
+	height: 190px;
+	background-color: #888;
+	margin-left: 100px;
+	position: absolute;
 }
 
 #atmPressure{
@@ -303,11 +358,19 @@ input[type=range]:focus::-ms-fill-upper {
 
 #atmTemperature{
 	position: absolute;
+	width: 85px;
 	margin-top: 525px;
 	margin-left: 12px;
 }
 
-#atmCaptionPM, #atmCaptionTM{
+#atmTemperatureC{
+	position: absolute;
+	width: 85px;
+	margin-top: 525px;
+	margin-left: 105px;
+}
+
+#atmCaptionPM, #atmCaptionTM, #atmCaptionTCM{
 	position: absolute;
 	text-align: right;
 	margin-top: 447.5px;
@@ -318,8 +381,16 @@ input[type=range]:focus::-ms-fill-upper {
 	user-select: none; /* Standard */
 }
 
-#atmCaptionTM{
+#atmCaptionTM, #atmCaptionTCM{
 	margin-top: 538.5px;
+}
+
+#atmCaptionTM{
+	margin-left: 75px;
+}
+
+#atmCaptionTCM{
+	margin-left: 158px
 }
 
 #atmCaptionP, #atmCaptionT{
