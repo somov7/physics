@@ -175,6 +175,20 @@ function drawRuler(){
 	}
 }
 
+function drawStick(){
+	ctx.beginPath();
+	ctx.rect(920, -100, 10, 700);
+	ctx.stroke();
+
+
+	ctx.fillStyle="#FFFFFF";
+	ctx.beginPath();
+	ctx.rect(750, 320 - ballast_h, 190, 10);
+	ctx.fill();
+	ctx.stroke();
+	ctx.fillStyle="#000000";
+}
+
 function drawStraw(){
 	ctx.beginPath();
 	ctx.moveTo(290,57);
@@ -391,6 +405,7 @@ function redraw(){
 	drawRuler();
 	drawBulb();
 	drawWater();
+	drawStick();
 	ctx.restore();
 }
 
