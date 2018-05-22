@@ -215,6 +215,7 @@ function set(){
 function reset(){
 	valve_state = false;
 	bulb_state = true;
+	document.getElementById("ballastHeight").value = 555;
 	setBallastHeight();
 	bulb_close_degree = 0;
 	volume = bottle_volume + bulb_volume;
