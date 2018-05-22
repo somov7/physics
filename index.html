@@ -25,9 +25,9 @@
 	<p id="atmCaptionP">Атмосферное давление</p>
 	<p id="atmCaptionT">Температура воздуха</p>
 
-	<input type="number" id="atmPressure" min="50000" max="200000" value="101300">
-	<input type="number" id="atmTemperature" min="253.15" max="323.15" value="297.15" step="0.01" onchange="connectTemperatures(true)">
-	<input type="number" id="atmTemperatureC" min="-20" max="50" value="20" step="0.01" onchange="connectTemperatures(false)">
+	<input type="number" id="atmPressure" min="80000" max="120000" value="101300" onchange="connectPressure()">
+	<input type="number" id="atmTemperature" min="253.15" max="323.15" value="297.15" step="0.05" onchange="connectTemperatures(true)">
+	<input type="number" id="atmTemperatureC" min="-20" max="50" value="20" step="0.05" onchange="connectTemperatures(false)">
 	
 	<p id="atmCaptionPM">Па</p>
 	<p id="atmCaptionTM">К</p>
@@ -41,13 +41,11 @@
 	<p id="printPressureCap">Давление:</p>
 	<p id="printTemperatureCap">Температура:</p>
 	<p id="printTimeCap">Время:</p>
-	<p id="printWaterCap">Высота столбика воды:</p>
 
 	<p id="printVolume">5.5 Л</p>
 	<p id="printPressure">103500 Па</p>
 	<p id="printTemperature">303 К</p>
 	<p id="printTime">0 сек</p>
-	<p id="printWater">0 мм</p>
 
 </div>
 
@@ -55,9 +53,19 @@
 	<input type="range" id="ballastHeight" min="-220" max="555" value="400" oninput="setBallastHeight()">
 </div>
 
+<input type="button" id="rulerLine" onmousemove="getCursorPos(event)" onmouseout="ungetCursorPos(event)"></input> <!--onclick="toggleLine(e)" -->
+
 <canvas id="myCanvas" width="900px" height="800px"></canvas>
+<div id="plots">
+	<canvas id="plot1Canvas" width="350px" height="300px" class="plot"></canvas>
+</div>
 
 <script src="script.js"></script>
+<script src="draw.js"></script>
+<script src="plots.js"></script>
+<script>
+	set();
+</script>
 
 </body>
 </html>
