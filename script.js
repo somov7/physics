@@ -61,8 +61,8 @@ function calcPhysics(){
 		if(bulb_close_degree >= 0.999)
 			bulb_close_degree = 0.999;
 	}
-	
 	if(bulb_close_degree_ph < 1){
+		/*bulb_close_degree_ph += deltaTime / bulb_press_period_ph;*/
 		bulb_close_degree_ph = 2 * pastTime / bulb_press_period_ph - Math.pow(pastTime / bulb_press_period_ph, 2);		
 		if(pastTime > bulb_press_period_ph)
 			bulb_close_degree_ph = 1;
@@ -71,17 +71,17 @@ function calcPhysics(){
 		pressure *= Math.pow(volume / new_volume, poisson);
 		volume = new_volume;
 	}
-
-	if(valve_state){
-		temperature = atmosphere_temperature + (temperature - atmosphere_temperature) * Math.pow(Math.E, -0.00153 * deltaTime);
-		pressure = atmosphere_pressure + (pressure - atmosphere_pressure) * Math.pow(Math.E, -0.002 * deltaTime);
-	}
 	else{
-		let new_temperature = atmosphere_temperature + (temperature - atmosphere_temperature) * Math.pow(Math.E, -0.00006 * deltaTime);
-		pressure *= new_temperature / temperature;
-		temperature = new_temperature;
+		if(valve_state){
+			temperature = atmosphere_temperature + (temperature - atmosphere_temperature) * Math.pow(Math.E, -0.00153 * deltaTime);
+			pressure = atmosphere_pressure + (pressure - atmosphere_pressure) * Math.pow(Math.E, -0.002 * deltaTime);
+		}
+		else{
+			let new_temperature = atmosphere_temperature + (temperature - atmosphere_temperature) * Math.pow(Math.E, -0.00006 * deltaTime);
+			pressure *= new_temperature / temperature;
+			temperature = new_temperature;
+		}
 	}
-
 	ballast_water_h = (water_volume - 2 * ballast_h + (pressure - atmosphere_pressure) / (water_rho * g) * 100 * (450/ruler_h)) / 51;
 	water_h = water_volume - ballast_h - ballast_water_h * 50;
 }
