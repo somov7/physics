@@ -76,7 +76,7 @@ function drawRuler(){
 	ctx.rect(660, -100, 80, 700);
 	ctx.stroke();
 
-
+	ctx.font="14px Segoe UI";
 	for(let i = 0; i <= ruler_h; i++){
 			ctx.lineWidth = 0.5;
 		let y = i * 450 / ruler_h;
@@ -105,7 +105,12 @@ function drawStick(){
 
 	ctx.fillStyle="#FFFFFF";
 	ctx.beginPath();
-	ctx.rect(750, 320 - ballast_h, 190, 10);
+	//ctx.rect(750, 320 - ballast_h, 190, 10);
+	ctx.moveTo(755, 320 - ballast_h);
+	ctx.lineTo(935, 320 - ballast_h);
+	ctx.arc(935, 325 - ballast_h, 5, 1.5*Math.PI, 0.5*Math.PI);
+	ctx.lineTo(760, 330 - ballast_h);
+	ctx.arc(755, 325 - ballast_h, 5, 0.5*Math.PI, 1.5*Math.PI);
 	ctx.fill();
 	ctx.stroke();
 	ctx.fillStyle="#000000";
@@ -255,8 +260,10 @@ function drawWater(){
 }
 
 function drawDash(){
-	if(draw_dash && bulb_close_degree > 0){
-		ctx.beginPath();
+	if(!lab_mode)
+		my = 650 - water_h;
+	if(draw_dash){
+		ctx.beginPath(); 
 		ctx.setLineDash([15, 15]);
 		ctx.moveTo(660, my - 200);
 		ctx.lineTo(540, my - 200);

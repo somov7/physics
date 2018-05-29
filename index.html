@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Проект по физике</title>
+	<title>Симулятор лабораторной №5</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
@@ -32,6 +32,13 @@
 	<p id="atmCaptionPM">Па</p>
 	<p id="atmCaptionTM">К</p>
 	<p id="atmCaptionTCM">°C</p>
+
+	<p id="modeCaption">Режим</p>
+	<label class="switch" id="modeSlider">
+	  <input type="checkbox" onclick="toggleMode()" id="modeCheckbox">
+	  <span class="slider"></span>
+	</label>
+	<p id="modeName">Демонстрация</p>
 	
 </div>
 
@@ -49,16 +56,59 @@
 
 </div>
 
+<div id="labOutput">
+	<p id="printTimeLab">0 сек</p>
+	<label id="htCaption" for="ht">h<sub>T</sub></label>
+	<input type="number" id="ht" min="0" max="250">
+	<input type="button" id="calcPoints" onclick="calcPoints()" value="Заполнить таблицу">
+	<input type="button" id="buildHPlot" onclick="buildHPlot()" value="Построить график">
+</div>
+
+<div id="labOutput2">
+	<label for="h0">h<sub>0</sub></label>
+	<input type="number" id="h0" min="36" max="250">
+</div>
+
 <div id="ballast">
 	<input type="range" id="ballastHeight" min="-220" max="555" value="400" oninput="setBallastHeight()">
 </div>
 
-<input type="button" id="rulerLine" onmousemove="getCursorPos(event)" onmouseout="ungetCursorPos(event)"></input> <!--onclick="toggleLine(e)" -->
-
+<input type="button" id="rulerLine" onmousemove="getCursorPos(event)" onhover="getCursorPos(event)" onmouseout="ungetCursorPos(event)" onclick="getPoint(event)"></input> 
 <canvas id="myCanvas" width="900px" height="800px"></canvas>
+
 <div id="plots">
-	<canvas id="plot1Canvas" width="350px" height="300px" class="plot"></canvas>
+	<canvas id="plot1Canvas" width="350px" height="310px" class="plot"></canvas>
+	<canvas id="plot3Canvas" width="350px" height="310px" class="plot"></canvas><br>
+	<canvas id="plot2Canvas" width="970px" height="310px" class="plot"></canvas>
 </div>
+
+<div id="lab" width="1000px">
+	<table id="labTable" border="0" cellspacing="5" cellpadding="5">
+		<tr>
+			<td>
+				<canvas id="plotH" width="580px" height="520px"></canvas>
+			</td>
+			<td>
+				<p id="labFormula"></p>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<input type="button" id="showPlots" onclick="togglePlots()" value="Показать графики">
+
+<table id="pointsTable">
+	<col width="100px">
+	<col width="100px">
+	<col width="100px">
+	<col width="100px">
+	<tr>
+		<td>t (сек)</td>
+		<td>h (мм)</td>
+		<td>Δh (мм)</td>
+		<td>ln(Δh)</td>
+	</tr>
+</table>
 
 <script src="script.js"></script>
 <script src="draw.js"></script>
